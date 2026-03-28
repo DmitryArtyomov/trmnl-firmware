@@ -138,6 +138,7 @@ enum {
     EP75_800x480_4GRAY, // GDEY075T7 in 4 grayscale mode
     EP75_800x480_4GRAY_V2, // GDEY075T7 in 4 grayscale mode, panel which produces too light output
     EP29_128x296, // Pimoroni Badger2040
+    EP29_128x296_4GRAY, // Pimoroni Badger2040 4 grayscale mode
     EP213R_122x250, // Inky phat 2.13 B/W/R
     EP154_200x200, // waveshare
     EP154B_200x200, // DEPG01540BN
@@ -147,6 +148,7 @@ enum {
     EP583_648x480, // DEPG0583BN
     EP296_128x296, // Waveshare 2.9" 128x296 B/W V2
     EP26R_152x296, // Solum 2.6" B/W/R harvested panel
+    // EP47_540x960, // M5Paper (original)
     EP73_800x480, // GEDY073D46 (slower, EOL 7-color)
     EP73_SPECTRA_800x480, // Spectra 6 7-color 800x480
     EP74R_640x384,
@@ -158,6 +160,8 @@ enum {
     EP41_640x400, // EInk ED040TC1 SPI UC81xx
     EP81_SPECTRA_1024x576, // Spectra 8.1" 1024x576 6-colors
     EP7_960x640, // ED070EC1
+    EP213R2_122x250,
+    EP75_640x384, // Waveshare 7.5" 640x384 B/W (old model)
     EP_PANEL_COUNT
 };
 #ifdef FUTURE
@@ -198,6 +202,7 @@ enum {
 #define BBEP_4BPP_DATA 0x0100
 #define BBEP_SPLIT_BUFFER 0x0200
 #define BBEP_HAS_SECOND_PLANE 0x0400
+#define BBEP_EP75_640x384_BW 0x0800
 
 #define BBEP_BLACK 0
 #define BBEP_WHITE 1
@@ -542,4 +547,3 @@ void bbepWriteData(BBEPDISP *pBBEP, uint8_t *pData, int iLen);
 void bbepCMD2(BBEPDISP *pBBEP, uint8_t cmd1, uint8_t cmd2);
 void bbepSetLightSleep(bool enabled);
 #endif // __BB_EPAPER__
-

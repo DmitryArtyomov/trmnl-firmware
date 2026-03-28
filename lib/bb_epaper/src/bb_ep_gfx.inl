@@ -281,7 +281,7 @@ void bbepDrawSprite(BBEPDISP *pBBEP, const uint8_t *pSprite, int cx, int cy, int
         int iDestPitch;
         // start writing into the correct plane
         if (pBBEP->chip_type == BBEP_CHIP_UC81xx) {
-            if (pBBEP->iFlags & BBEP_RED_SWAPPED) {
+            if (pBBEP->iFlags & (BBEP_RED_SWAPPED | BBEP_EP75_640x384_BW)) {
                 u8CMD1 = UC8151_DTM1;
                 u8CMD2 = UC8151_DTM2;
             } else {
@@ -1262,7 +1262,7 @@ int bbepWriteStringCustom(BBEPDISP *pBBEP, void *pFont, int x, int y, char *szMs
                 iPitch = (w+7)/8;
                 // start writing into the correct plane
                 if (pBBEP->chip_type == BBEP_CHIP_UC81xx) {
-                    if (pBBEP->iFlags & BBEP_RED_SWAPPED) {
+                    if (pBBEP->iFlags & (BBEP_RED_SWAPPED | BBEP_EP75_640x384_BW)) {
                         u8CMD1 = UC8151_DTM1;
                         u8CMD2 = UC8151_DTM2;
                     } else {
@@ -1426,7 +1426,7 @@ int bbepWriteString(BBEPDISP *pBBEP, int x, int y, char *szMsg, int iSize, int i
         iBG = pBBEP->pColorLookup[iBG & 0xf];
     }
     if (pBBEP->chip_type == BBEP_CHIP_UC81xx) {
-        if (pBBEP->iFlags & BBEP_RED_SWAPPED) {
+        if (pBBEP->iFlags & (BBEP_RED_SWAPPED | BBEP_EP75_640x384_BW)) {
             ucCMD1 = UC8151_DTM1;
             ucCMD2 = UC8151_DTM2;
         } else {
@@ -2110,4 +2110,3 @@ void bbepRoundRect(BBEPDISP *pBBEP, int x, int y, int w, int h, int r, uint8_t i
 } /* bbepRoundRect() */
 
 #endif // __BB_EP_GFX__
-

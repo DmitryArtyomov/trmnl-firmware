@@ -11,11 +11,12 @@
 #define BB_EPAPER
 #include "bb_epaper.h"
 const DISPLAY_PROFILE dpList[4] = { // 1-bit and 2-bit display types for each profile
+    {EP75_640x384, EP75_640x384},
     {EP75_800x480, EP75_800x480_4GRAY}, // default (for original EPD)
     {EP75_800x480_GEN2, EP75_800x480_4GRAY_GEN2}, // a = uses built-in fast + 4-gray 
     {EP75_800x480, EP75_800x480_4GRAY_V2}, // b = darker grays
 };
-BBEPAPER bbep(EP75_800x480);
+BBEPAPER bbep(EP75_640x384);
 // Counts the number of partial updates to know when to do a full update
 #else
 #include "FastEPD.h"
@@ -484,7 +485,31 @@ int png_draw(PNGDRAW *pDraw)
             } // for x
         }
     }
-    bbep.writeData(pTemp, (pDraw->iWidth+7)/8);
+    // For EP75_640x384_BW, convert 1-bit data to 4-bit-per-pixel format
+    #if defined(DISPLAY_4_BPP)
+        // EP75_640x384 uses 4-bit-per-pixel: 0x00=black, 0x03=white
+        // 1 byte of 1-bit data (8 pixels) becomes 4 bytes of 4-bit data (8 pixels, 2 per byte)
+        int iBytes = (pDraw->iWidth+7)/8;
+        int tx;
+        uint8_t *pOut = pTemp; // reuse the same buffer
+        uint8_t ucSrc;
+        const uint8_t u8Lookup[4] = {0x00, 0x03, 0x30, 0x33};
+        // Convert: for each byte of 1-bit data, create 4 bytes of 4-bit data
+        // Process backwards to avoid overwriting unread input data
+        // Each input byte has 8 pixels, we extract 2-bit pairs and convert to 4-bit
+        for (tx=iBytes-1; tx>=0; tx--) {
+            ucSrc = pTemp[tx]; // read input before overwriting
+            // Extract 2-bit pairs and convert using lookup table
+            // Most significant pair first (bits 7,6), then (5,4), (3,2), (1,0)
+            pOut[tx*4 + 0] = u8Lookup[ucSrc >> 6];
+            pOut[tx*4 + 1] = u8Lookup[(ucSrc >> 4) & 3];
+            pOut[tx*4 + 2] = u8Lookup[(ucSrc >> 2) & 3];
+            pOut[tx*4 + 3] = u8Lookup[ucSrc & 3];
+        }
+        bbep.writeData(pOut, iBytes * 4);
+    #else
+        bbep.writeData(pTemp, (pDraw->iWidth+7)/8);
+    #endif
     return 1;
 } /* png_draw() */
 #else // TRMNL_X version

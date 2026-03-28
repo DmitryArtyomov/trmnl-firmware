@@ -1949,6 +1949,71 @@ const uint8_t epd74r_init[] PROGMEM = {
     0x00
 };
 
+// EP75_640x384 2-color initialization sequence (matches Waveshare reference)
+const uint8_t epd75_640x384_init_old[] PROGMEM = {
+    // FLASH CONTROL - release flash sleep
+    0x02, 0x65, 0x01,
+    0x01, 0xab,
+    0x02, 0x65, 0x00,
+    // POWER_SETTING (0x01): 0x37, 0x00
+    0x03, 0x01, 0x37, 0x00,
+    // PANEL_SETTING (0x00): 0xCF, 0x08
+    0x03, 0x00, 0xcf, 0x08,
+    // BOOSTER_SOFT_START (0x06): 0xc7, 0xcc, 0x28
+    0x04, 0x06, 0xc7, 0xcc, 0x28,
+    // PLL_CONTROL (0x30): 0x3c
+    0x02, 0x30, 0x3c,
+    // TEMPERATURE_CALIBRATION (0x41): 0x00
+    0x02, 0x41, 0x00,
+    // VCOM_AND_DATA_INTERVAL_SETTING (0x50): 0x77
+    0x02, 0x50, 0x77,
+    // TCON_SETTING (0x60): 0x22
+    0x02, 0x60, 0x22,
+    // TCON_RESOLUTION (0x61): 0x02, 0x80, 0x01, 0x80 (640x384)
+    0x05, 0x61, 0x02, 0x80, 0x01, 0x80,
+    // VCM_DC_SETTING (0x82): 0x1E
+    0x02, 0x82, 0x1e,
+    // FLASH MODE (0xe5): 0x03
+    0x02, 0xe5, 0x03,
+    // POWER_ON (0x04): wait for ready
+    0x01, 0x04,
+    BUSY_WAIT,
+    0x00
+};
+
+const uint8_t epd75_640x384_init[] PROGMEM = {
+    // FLASH CONTROL - release flash sleep
+    0x02, 0x65, 0x01,
+    0x01, 0xab,
+    0x02, 0x65, 0x00,
+
+    // BOOSTER_SOFT_START (0x06): 0xc7, 0xcc, 0x28
+    0x04, 0x06, 0xc7, 0xcc, 0x28,
+    // POWER_SETTING (0x01): 0x37, 0x00
+    0x03, 0x01, 0x37, 0x00,
+    // POWER_ON (0x04): wait for ready
+    0x01, 0x04,
+    BUSY_WAIT,
+    // PANEL_SETTING (0x00): 0xCF, 0x08
+    0x03, 0x00, 0xcf, 0x08,
+    // PLL_CONTROL (0x30): 0x3c
+    0x02, 0x30, 0x3c,
+    // TEMPERATURE_CALIBRATION (0x41): 0x00
+    0x02, 0x41, 0x00,
+    // TCON_SETTING (0x60): 0x22
+    0x02, 0x60, 0x22,
+    // TCON_RESOLUTION (0x61): 0x02, 0x80, 0x01, 0x80 (640x384)
+    0x05, 0x61, 0x02, 0x80, 0x01, 0x80,
+    // VCM_DC_SETTING (0x82): 0x1E
+    0x02, 0x82, 0x1e,
+    // VCOM_AND_DATA_INTERVAL_SETTING (0x50): 0x77
+    0x02, 0x50, 0x77,
+    // FLASH MODE (0xe5): 0x03
+    0x02, 0xe5, 0x03,
+
+    0x00
+};
+
 // GDEY073D46 800x480 7-color init sequence
 const uint8_t epd73_init[] PROGMEM = {
     7, 0xaa, 0x49, 0x55, 0x20, 0x08, 0x09, 0x18, // CMD H
@@ -2127,13 +2192,14 @@ const EPD_PANEL panelDefs[] PROGMEM = {
     {640, 384, 0, epd74r_init, NULL, NULL,  BBEP_3COLOR | BBEP_4BPP_DATA, BBEP_CHIP_UC81xx, u8Colors_3clr}, // EP74R_640x384, 3-color 640x384
     {600, 448, 0, epd583r_init, NULL, NULL,  BBEP_3COLOR | BBEP_4BPP_DATA, BBEP_CHIP_UC81xx, u8Colors_3clr}, // EP583R_600x448, 3-color 600x448
     {800, 480, 0, epd75r_init, NULL, NULL, BBEP_3COLOR | BBEP_RED_SWAPPED, BBEP_CHIP_UC81xx, u8Colors_3clr}, // EP75R_800x480, waveshare 7.5 800x480 B/W/R
-    {800, 480, 0, epd426_init_full, epd426_init_fast, epd426_init_part, 0, BBEP_CHIP_SSD16xx, u8Colors_2clr},
+    {800, 480, 0, epd426_init_full, epd426_init_fast, epd426_init_part, 0, BBEP_CHIP_SSD16xx, u8Colors_2clr}, //EP426_800x480, Waveshare 4.26" B/W 800x480
     {800, 480, 0, epd426g_init, NULL, NULL, BBEP_4GRAY, BBEP_CHIP_SSD16xx, u8Colors_4gray}, // 2-bit grayscale mode
     {128, 296, 0, epd29r2_init_sequence_full, NULL, NULL, BBEP_RED_SWAPPED | BBEP_3COLOR, BBEP_CHIP_UC81xx, u8Colors_3clr}, // EP29R2_128x296 Adafruit 2.9" 128x296 Tricolor FeatherWing
     {640, 400, 0, epd41_init_sequence_full, NULL, NULL, BBEP_4BPP_DATA, BBEP_CHIP_UC81xx, u8Colors_2clr}, // EP41_640x400 Eink ED040TC1
     {1024, 576, 0, epd81c_init_full, NULL, NULL, BBEP_SPLIT_BUFFER | BBEP_7COLOR, BBEP_CHIP_UC81xx, u8Colors_spectra}, // 8.1" 1024x576 dual cable Spectra 6 EP81_SPECTRA_1024x576
     {960, 640, 0, ep7_init, NULL, ep7_init_partial, 0, BBEP_CHIP_SSD16xx, u8Colors_2clr}, // EP7_960x640 (ED070EC1)
     {122, 250, 0, epd213r2_init_sequence_full, epd213r2_init_sequence_fast, NULL, BBEP_RED_SWAPPED | BBEP_3COLOR, BBEP_CHIP_UC81xx, u8Colors_3clr}, // EP213R2_122x250 3 color
+    {640, 384, 0, epd75_640x384_init_old, NULL, NULL, BBEP_EP75_640x384_BW, BBEP_CHIP_UC81xx, u8Colors_2clr}, // EP75_640x384, 2-color 640x384 Waveshare
 };
 //
 // Set the e-paper panel type
@@ -2393,6 +2459,11 @@ void bbepSleep(BBEPDISP *pBBEP, int bDeep)
                pBBEP->iCSPin = pBBEP->iCS1Pin;
             }
         } else {
+            if (pBBEP->iFlags & BBEP_EP75_640x384_BW) {
+                bbepCMD2(pBBEP, 0X65, 0x01); // FLASH CONTROL
+                bbepWriteCmd(pBBEP, 0xB9);
+                bbepCMD2(pBBEP, 0X65, 0x00); // FLASH CONTROL
+            }
             bbepCMD2(pBBEP, UC8151_CDI, 0x17); // border floating
             bbepWriteCmd(pBBEP, UC8151_POFF); // power off
             bbepWaitBusy(pBBEP);
@@ -2412,7 +2483,7 @@ void bbepStartWrite(BBEPDISP *pBBEP, int iPlane)
     
     if (!pBBEP) return;
     if (pBBEP->chip_type == BBEP_CHIP_UC81xx) {
-        if (pBBEP->iFlags & BBEP_RED_SWAPPED) {
+        if (pBBEP->iFlags & (BBEP_RED_SWAPPED | BBEP_EP75_640x384_BW)) {
             if (iPlane == PLANE_0)
                 u8Cmd = UC8151_DTM1;
             else
@@ -2549,9 +2620,15 @@ void bbepFill(BBEPDISP *pBBEP, unsigned char ucColor, int iPlane)
             if (ucColor == BBEP_WHITE) ucColor = 0xff;
             else if (ucColor == BBEP_BLACK) ucColor = 0;
             uc1 = uc2 = ucColor;
-            if (pBBEP->iFlags & BBEP_4BPP_DATA) { // special case
-                 // EInk 4.1" 640x400 uses 4-bpp data for 1-bpp images
-                 uc1 = (ucColor == BBEP_WHITE) ? 0x00 : 0x11;
+            if (pBBEP->iFlags & (BBEP_4BPP_DATA | BBEP_EP75_640x384_BW)) { // special case
+                if (pBBEP->iFlags & BBEP_4BPP_DATA) {
+                    // EInk 4.1" 640x400 uses 4-bpp data for 1-bpp images
+                    uc1 = (ucColor == BBEP_WHITE) ? 0x00 : 0x11;
+                } else if (pBBEP->iFlags & BBEP_EP75_640x384_BW) {
+                    // EP75_640x384_BW: 0x00=black, 0x03=white (lowest 2 bits: 00=black, 11=white)
+                    // 1 byte = 2 pixels: 0x33 = white/white, 0x00 = black/black
+                    uc1 = (ucColor == BBEP_WHITE) ? 0x00 : 0x33;
+                }
                  memset(u8Cache, uc1, pBBEP->native_width/2);
                  bbepWriteCmd(pBBEP, 0x10);
                  for (y=0; y<pBBEP->native_height; y++) {
@@ -2561,7 +2638,7 @@ void bbepFill(BBEPDISP *pBBEP, unsigned char ucColor, int iPlane)
             }
         }
         if (pBBEP->chip_type == BBEP_CHIP_UC81xx) {
-            if (pBBEP->iFlags & (BBEP_RED_SWAPPED | BBEP_4COLOR)) {
+            if (pBBEP->iFlags & (BBEP_RED_SWAPPED | BBEP_4COLOR | BBEP_EP75_640x384_BW)) {
                 ucCMD1 = UC8151_DTM1;
                 ucCMD2 = UC8151_DTM2;
             } else {
@@ -3013,8 +3090,18 @@ static void bbepWriteImage1to4bpp(BBEPDISP *pBBEP, uint8_t ucCMD, uint8_t *pBuff
     uint8_t *s, *d, uc;
     uint8_t ucInvert = 0;
     int iPitch;
-// lookup table to convert 2 bits into 8
-    const uint8_t u8Lookup[4] = {0x00, 0x01, 0x10, 0x11};
+
+    // Move u8Lookup outside the conditional so it is always available
+    const uint8_t u8Lookup_ep75[4] = {0x00, 0x03, 0x30, 0x33};
+    const uint8_t u8Lookup_std[4]  = {0x00, 0x01, 0x10, 0x11};
+    const uint8_t *u8Lookup;
+
+    if (pBBEP->iFlags & BBEP_EP75_640x384_BW) {
+        // For EP75_640x384_BW: 0x00=black, 0x03=white (lowest 2 bits: 00=black, 11=white)
+        u8Lookup = u8Lookup_ep75;
+    } else {
+        u8Lookup = u8Lookup_std;
+    }
 
     iPitch = (pBBEP->width + 7) >> 3;
     if (bInvert) {
@@ -3160,7 +3247,7 @@ int bbepWritePlane(BBEPDISP *pBBEP, int iPlane, int bInvert)
         return BBEP_SUCCESS;
     }
     if (pBBEP->chip_type == BBEP_CHIP_UC81xx) {
-        if (pBBEP->iFlags & BBEP_RED_SWAPPED) {
+        if (pBBEP->iFlags & (BBEP_RED_SWAPPED | BBEP_EP75_640x384_BW)) {
             ucCMD1 = UC8151_DTM1;
             ucCMD2 = UC8151_DTM2;
         } else {
